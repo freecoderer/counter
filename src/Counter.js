@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Counter.css';
 
 function Counter() {
     const [counter, setCounter] = useState(0);
 
-    const increment = () => {
+    const increment = useCallback(() => {
         setCounter(counter + 1);
-    };
+    }, [counter]);
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = useCallback((event) => {
         if (event.code === 'Space') { // Check if the key pressed was the spacebar
             increment();
         }
-    };
+    }, [increment]);
 
     useEffect(() => {
         window.addEventListener('click', increment);
-        window.addEventListener('keydown', handleKeyDown); // Add this line
+        window.addEventListener('keydown', handleKeyDown);
 
         // Cleanup function to remove the event listeners when the component unmounts
         return () => {
             window.removeEventListener('click', increment);
-            window.removeEventListener('keydown', handleKeyDown); // Add this line
+            window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [counter]); // Re-run the effect when `counter` changes
+    }, [increment, handleKeyDown]); // Add handleKeyDown and increment to the dependencies array
 
     return (
         <div className="counter">
